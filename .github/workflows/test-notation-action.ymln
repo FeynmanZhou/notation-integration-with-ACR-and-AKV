@@ -6,8 +6,8 @@ on:
       - v*
 
 env:
-  ACR_TO_RELEASE: testnotation.azurecr.io
-  ACR_USERNAME: testnotation
+  ACR_TO_RELEASE: feynmanacr.azurecr.io
+  ACR_USERNAME: feynmanacr
   NOTATION_EXPERIMENTAL: 1
 
 jobs:
@@ -19,10 +19,10 @@ jobs:
       packages: write
     uses: ./.github/workflows/reusable-acr-and-akv-setup.yml
     with:
-      ACR_TO_RELEASE: testnotation.azurecr.io
-      ACR_REPO_TO_RELEASE: integration
-      ACR_USERNAME: testnotation
-      AKV_NAME: testnotationAKV
+      ACR_TO_RELEASE: feynmanacr.azurecr.io
+      ACR_REPO_TO_RELEASE: net-monitor
+      ACR_USERNAME: feynmanacr
+      AKV_NAME: feynman-akv
     secrets:
       ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
