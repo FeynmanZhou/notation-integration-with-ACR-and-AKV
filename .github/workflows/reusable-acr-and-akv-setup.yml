@@ -1,4 +1,4 @@
-name: Reusable Notation ACR and AKV integration setup
+name: notation-acr-akv-plugin
 
 on:
   workflow_call:
