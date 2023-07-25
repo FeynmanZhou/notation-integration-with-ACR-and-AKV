@@ -59,7 +59,7 @@ jobs:
           key_id: https://feynman-akv.vault.azure.net/keys/feynmanakv-networks-io/6670ffa5cb694c49b1e0a6bb6bdefadc
           target_artifact_reference: ${{ needs.setup-acr-and-akv.outputs.target-artifact-reference }}
           signature_format: cose
-          plugin_config: ca_certs=.github/cert-bundle/cert-bundle.crt
+         # plugin_config: ca_certs=.github/cert-bundle/cert-bundle.crt
       - name: verify released artifact
         uses: Two-Hearts/notation-action/verify@refactor
         with:
