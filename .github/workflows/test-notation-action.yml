@@ -56,7 +56,7 @@ jobs:
           plugin_name: azure-kv
           plugin_url: https://github.com/Azure/notation-azure-kv/releases/download/v1.0.0-rc.2/notation-azure-kv_1.0.0-rc.2_linux_amd64.tar.gz
           plugin_checksum: 4242054463089F4b04019805f2c009267dbcc9689e386BC88d3c4fc4E095e52c
-          key_id: https://feynman-akv.vault.azure.net/keys/wabbit-network-io/f0bf51665b074bbdb6438ce909489e55
+          key_id: https://feynman-akv.vault.azure.net/keys/feynmanakv-networks-io/6670ffa5cb694c49b1e0a6bb6bdefadc
           target_artifact_reference: ${{ needs.setup-acr-and-akv.outputs.target-artifact-reference }}
           signature_format: cose
           plugin_config: ca_certs=.github/cert-bundle/cert-bundle.crt
