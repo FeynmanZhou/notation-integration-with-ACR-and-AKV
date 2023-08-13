@@ -26,10 +26,9 @@ env:
 #       ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
 #       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
+  #  # build and push the release, setup notation, sign the artifact, and verify the signature
 jobs:
-  # setup notation, sign the artifact, and verify the signature
   notation-setup-sign-verify:
-    needs: setup-acr-and-akv
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,6 +36,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: prepare
+        id: prepare
+        run: |
+          BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}:${BRANCH_NAME}" >> "$GITHUB_ENV"
       - name: docker login
         uses: azure/docker-login@v1
         with:
