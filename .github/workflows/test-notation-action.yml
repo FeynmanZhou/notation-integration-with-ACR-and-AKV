@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: v2.0.0
+          tags: ${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}:v2.0.0
       - name: Retrieve digest
         run: |
           echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}@${{ steps.push.outputs.digest }}" >> "$GITHUB_ENV"
