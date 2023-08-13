@@ -26,6 +26,7 @@ env:
 #       ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
 #       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
+jobs:
   # setup notation, sign the artifact, and verify the signature
   notation-setup-sign-verify:
     needs: setup-acr-and-akv
