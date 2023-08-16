@@ -1,0 +1,83 @@
+name: test-notation-action
+
+on:
+  push:
+
+env:
+  ACR_TO_RELEASE: feynmanacr.azurecr.io
+  ACR_REPO_TO_RELEASE: net-monitor
+  ACR_USERNAME: feynmanacr
+  AKV_NAME: feynman-akv
+  KEY_ID: https://feynman-akv.vault.azure.net/keys/feynmanakv-networks-io/6670ffa5cb694c49b1e0a6bb6bdefadc
+  NOTATION_EXPERIMENTAL: 1
+
+# jobs:
+#   # call reusable workflow to build artifact, release to ACR, and sets AKV
+#   # permissions. 
+#   setup-acr-and-akv:
+#     permissions:
+#       contents: read
+#       packages: write
+#     uses: ./.github/workflows/reusable-acr-and-akv-setup.yml
+#     with:
+#       ACR_TO_RELEASE: feynmanacr.azurecr.io
+#       ACR_USERNAME: feynmanacr
+#     secrets:
+#       ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+#       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+  #  # build and push the release, setup notation, sign the artifact, and verify the signature
+jobs:
+  notation-setup-sign-verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: prepare
+        id: prepare
+        run: |
+          BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}:${BRANCH_NAME}" >> "$GITHUB_ENV"
+      - name: docker login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_TO_RELEASE }}
+          username: ${{ env.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}:v2.0.0
+      - name: Retrieve digest
+        run: |
+          echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}@${{ steps.push.outputs.digest }}" >> "$GITHUB_ENV"
+      - name: AZURE login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          allow-no-subscriptions: true
+      - name: setup notation
+        uses: notaryproject/notation-action/setup@main
+      - name: sign released artifact using key pair from AKV
+        uses: notaryproject/notation-action/sign@main
+        with:
+          plugin_name: azure-kv
+          plugin_url: https://github.com/Azure/notation-azure-kv/releases/download/v1.0.0-rc.3/notation-azure-kv_1.0.0-rc.3_linux_amd64.tar.gz
+          plugin_checksum: 8e224572aa2f6d4f8f906217aaac78bfaaa0e272c039fe89443b5c4567b80bc5
+          key_id: ${{ env.KEY_ID }}
+          target_artifact_reference: ${{ env.target_artifact_reference }}
+          signature_format: cose
+          allow_referrers_api: 'true'
+         # plugin_config: ca_certs=.github/cert-bundle/cert-bundle.crt
+      - name: verify released artifact
+        uses: notaryproject/notation-action/verify@main
+        with:
+          target_artifact_reference: ${{ env.target_artifact_reference }}
+          trust_policy: .github/trustpolicy/trustpolicy.json
+          trust_store: .github/truststore
+          allow_referrers_api: 'true'
