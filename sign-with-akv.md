@@ -10,8 +10,8 @@ It helps software producer and software consumer to automate the Notation instal
 
 ## Scenario
 
-- Open-source project maintainers want to sign their released software assets including binaries and container images with their private key, assuring authenticity and integrity
-- Open-source project users want to verify if the release assets are produced by the official community and are not tampered with
+- Software producers sign their released software assets including binaries and container images with their private key, assuring authenticity and integrity
+- Software consumers verify if the release assets are produced by a trusted source and are not tampered with
 
 ## Hands-on steps
 
@@ -66,10 +66,10 @@ az ad sp create-for-rbac -n $spn --sdk-auth
 Grant AKV permission to the service principal that we created in the previous step.
 
 ```
-    # set policy for your AKV
-    akv=<your_akv_name>
-    az keyvault set-policy --name $akv --spn $clientId --certificate-permissions get --key-permissions sign --secret-permissions get
-    ```
+# set policy for your AKV
+akv=<your_akv_name>
+az keyvault set-policy --name $akv --spn $clientId --certificate-permissions get --key-permissions sign --secret-permissions get
+```
 
 See [az keyvault set-policy](https://learn.microsoft.com/en-us/cli/azure/keyvault?view=azure-cli-latest#az-keyvault-set-policy) for details.
 
