@@ -32,9 +32,9 @@ Add two credentials to authenticate with ACR and AKV as follows, two Github Secr
 - `ACR_PASSWORD`: the password to log in to the ACR where your artifact will be released
 - `AZURE_CREDENTIALS`: the credential to AKV where your key pair is stored
     
-### Create service principal and generate `AZURE_CREDENTIALS`
+### Create service principal and generate Azure credential
 
-- Execute the following command to generate Azure credentials. 
+- Execute the following command to create the service principal and generate Azure credentials. 
 
 ```
 # login using your own account
@@ -45,13 +45,13 @@ spn=notationtest
 az ad sp create-for-rbac -n $spn --sdk-auth
 ```
 
-    > [!IMPORTANT]
-    > 1. Add the JSON output of the above `az ad sp` command to [Github Secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#add-the-service-principal-as-a-github-secret) with name `AZURE_CREDENTIALS`.
-    >
-    > 2. Save the `clientId` from the JSON output into an environment variable (without double quotes) as it will be needed in the next step:
-    >```
-    >    clientId=<clientId_from_JSON_output_of_last_step>
-    >```
+> [!IMPORTANT]
+> 1. Add the JSON output of the above `az ad sp` command to [Github Secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#add-the-service-principal-as-a-github-secret) with name `AZURE_CREDENTIALS`.
+>
+> 2. Save the `clientId` from the JSON output into an environment variable (without double quotes) as it will be needed in the next step:
+>```
+>  clientId=<clientId_from_JSON_output_of_last_step>
+>```
 
 ### Create GitHub Secret to store credentials 
 
