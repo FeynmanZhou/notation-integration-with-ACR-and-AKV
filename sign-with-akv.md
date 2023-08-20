@@ -30,9 +30,9 @@ The sample workflow uses Notation Azure Key Vault plugin as an example plugin to
 Add two credentials to authenticate with ACR and AKV as follows, two Github Secrets are required in the whole process:
 
 - `ACR_PASSWORD`: the password to log in to the ACR where your artifact will be released
-- `AZURE_CREDENTIALS`: the credential to AKV where your key pair are stored
+- `AZURE_CREDENTIALS`: the credential to AKV where your key pair is stored
     
-### Generate `AZURE_CREDENTIALS`
+### Create service principal and generate `AZURE_CREDENTIALS`
 
 - Execute the following command to generate Azure credentials. 
 
@@ -40,35 +40,38 @@ Add two credentials to authenticate with ACR and AKV as follows, two Github Secr
 # login using your own account
 az login
 
-# Create an service principal
+# Create a service principal
 spn=notationtest
 az ad sp create-for-rbac -n $spn --sdk-auth
 ```
 
-- Creating an encrypted secret to store the Azure Credentials in your own GitHub repository. See [GitHub Docs](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for details.
+    > [!IMPORTANT]
+    > 1. Add the JSON output of the above `az ad sp` command to [Github Secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#add-the-service-principal-as-a-github-secret) with name `AZURE_CREDENTIALS`.
+    >
+    > 2. Save the `clientId` from the JSON output into an environment variable (without double quotes) as it will be needed in the next step:
+    >```
+    >    clientId=<clientId_from_JSON_output_of_last_step>
+    >```
 
-- Add the JSON output of the following `az ad sp` command to the value of Github Secret. Naming the GitHub Secret as `AZURE_CREDENTIALS`. 
+### Create GitHub Secret to store credentials 
+
+- Create an encrypted secret to store the Azure Credentials in your own GitHub repository. See [GitHub Docs](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for details.
+
+- Add the JSON output of the following `az ad sp` command to the value of GitHub Secret. Naming the GitHub Secret as `AZURE_CREDENTIALS`. 
 
 - Similarly, create another encrypted secret to store the registry credential or password in your own GitHub repository. For example, we use `ACR_PASSWORD` to store the password of the ACR registry in the GitHub Repository secret.
 
-### Grant permission to the principal
+### Grant AKV permission to the service principal
+
+Grant AKV permission to the service principal that we created in the previous step.
+
+```
+    # set policy for your AKV
+    akv=<your_akv_name>
+    az keyvault set-policy --name $akv --spn $clientId --certificate-permissions get --key-permissions sign --secret-permissions get
+    ```
 
 See [az keyvault set-policy](https://learn.microsoft.com/en-us/cli/azure/keyvault?view=azure-cli-latest#az-keyvault-set-policy) for details.
-
-```
-akv=notationakv
-az keyvault set-policy --name feynman-akv --spn notationaction --object-id 1e886f11-e3cd-4cc6-8769-6750ff1ddbba --certificate-permissions get --key-permissions sign --secret-permissions get
-```
-
-```
-az keyvault set-policy --name feynman-akv --object-id 1e886f11-e3cd-4cc6-8769-6750ff1ddbba --certificate-permissions get --key-permissions sign --secret-permissions get
-```
-
-### Log in with the service principal
-
-```
-az login
-```
 
 ### Prepare the trust policy and public certificate 
 
