@@ -6,22 +6,22 @@ Notation has the following three GitHub Actions available to use.
 - `sign`: Sign an OCI artifact with a specified plugin
 - `verify`: Verify a signature
 
-It helps software producer and software consumer to automate the Notation installation, signing and verification process respectively.
+It helps software producers and software consumers to automate the Notation installation, signing, and verification process respectively.
 
 ## Scenario
 
-- Software producers sign their released software assets including binaries and container images with their private key, assuring authenticity and integrity
-- Software consumers verify if the release assets are produced by a trusted source and are not tampered with
+Users can define a GitHub Actions [workflow](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/introduction-to-github-actions) to use the Notation actions to sign and verify artifacts in CI/CD pipeline. Generally, `sign` are `verify` are used by different types of users, such as software producers and software consumers. There are two major scenarios:
 
-## Hands-on steps
+- **Scenario 1**: Open-source project maintainers want to sign their released software assets including binaries and container images with their private key, assuring authenticity and integrity
+- **Scenario 2**: Open-source project users want to verify if the release assets are produced by the official community and are not tampered with
 
-Users can define a GitHub Actions [workflow](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/introduction-to-github-actions) to use the Notation actions to sign and verify artifact in CI/CD pipeline. There is a sample workflow file including three actions for testing purposes. Generally, `sign` are `verify` are used by different type of users, such as software producer and software consumer.
+### Scenario 1
 
-The sample workflow uses Notation Azure Key Vault plugin as an example plugin to sign and verify the latest build of the project, and push the signed image and its signature to Azure Container Registry using Notation Github Actions.
+There is a sample workflow for signing which uses the Notation Azure Key Vault plugin as an example plugin to sign the latest build of the project and push the signed image and its signature to Azure Container Registry using Notation Github Actions.
 
 ### Prerequisites
 
-- You have created a Key Vault in Azure Key Vault, and created a self-signed signing key and cert by following this [doc](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-sign-build-push) for testing purposes
+- You have created a Key Vault in Azure Key Vault and created a self-signed signing key and certificate. You can follow this [doc](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-sign-build-push#create-a-self-signed-certificate-azure-cli) to create self-signed key and certificate for testing purposes
 - You have created a registry in Azure Container Registry
 - You have a GitHub repository to store the sample workflow and GitHub Secret, as well as the public certificate and trust policy for verification use
 
