@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY_TO_RELEASE: ghcr.io
-  REGISTRY_REPO_TO_RELEASE: kubeconchina2023
+  REGISTRY_REPO_TO_RELEASE: kubeconchina2023/sign-action-demo
   AKV_NAME: feynmanakv
   KEY_ID: https://feynman-akv.vault.azure.net/keys/wabbit-network-io/f0bf51665b074bbdb6438ce909489e55
   NOTATION_EXPERIMENTAL: 1
