@@ -5,9 +5,9 @@ on:
 
 env:
   REGISTRY_TO_RELEASE: ghcr.io
-  EGISTRY_REPO_TO_RELEASE: kubeconchina2023
-  AKV_NAME: testnotationAKV
-  KEY_ID: https://testnotationakv.vault.azure.net/keys/notationLeafCert/c585b8ad8fc542b28e41e555d9b3a1fd
+  REGISTRY_REPO_TO_RELEASE: kubeconchina2023
+  AKV_NAME: feynmanakv
+  KEY_ID: https://feynman-akv.vault.azure.net/keys/wabbit-network-io/f0bf51665b074bbdb6438ce909489e55
   NOTATION_EXPERIMENTAL: 1
 
 jobs:
