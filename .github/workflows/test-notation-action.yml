@@ -4,9 +4,8 @@ on:
   push:
 
 env:
-  ACR_TO_RELEASE: testnotation.azurecr.io
-  ACR_REPO_TO_RELEASE: integration
-  ACR_USERNAME: testnotation
+  REGISTRY_TO_RELEASE: ghcr.io
+  EGISTRY_REPO_TO_RELEASE: kubeconchina2023
   AKV_NAME: testnotationAKV
   KEY_ID: https://testnotationakv.vault.azure.net/keys/notationLeafCert/c585b8ad8fc542b28e41e555d9b3a1fd
   NOTATION_EXPERIMENTAL: 1
@@ -26,13 +25,13 @@ jobs:
         id: prepare
         run: |
           BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}:${BRANCH_NAME}" >> "$GITHUB_ENV"
+          echo "target_artifact_reference=${{ env.REGISTRY_TO_RELEASE }}/${{ env.REGISTRY_REPO_TO_RELEASE }}:${BRANCH_NAME}" >> "$GITHUB_ENV"
       - name: docker login
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ env.ACR_TO_RELEASE }}
-          username: ${{ env.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          registry: ghcr.io
+          username: kubeconchina2023
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: push
         uses: docker/build-push-action@v4
@@ -41,7 +40,7 @@ jobs:
           tags: ${{ env.target_artifact_reference }}
       - name: Retrieve digest
         run: |
-          echo "target_artifact_reference=${{ env.ACR_TO_RELEASE }}/${{ env.ACR_REPO_TO_RELEASE }}@${{ steps.push.outputs.digest }}" >> "$GITHUB_ENV"
+          echo "target_artifact_reference=${{ env.REGISTRY_TO_RELEASE }}/${{ env.REGISTRY_REPO_TO_RELEASE }}@${{ steps.push.outputs.digest }}" >> "$GITHUB_ENV"
       - name: Azure login
         uses: Azure/login@v1
         with:
