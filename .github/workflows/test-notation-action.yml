@@ -6,7 +6,7 @@ on:
 env:
   REGISTRY_TO_RELEASE: ghcr.io
   REGISTRY_REPO_TO_RELEASE: kubeconchina2023/sign-action-demo
-  AKV_NAME: feynmanakv
+  AKV_NAME: feynman-akv
   KEY_ID: https://feynman-akv.vault.azure.net/keys/feynmanakv-networks-io/6670ffa5cb694c49b1e0a6bb6bdefadc
   NOTATION_EXPERIMENTAL: 1
 
