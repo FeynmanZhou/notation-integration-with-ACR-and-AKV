@@ -6,9 +6,6 @@ on:
 env:
   REGISTRY_TO_RELEASE: ghcr.io
   REGISTRY_REPO_TO_RELEASE: kubeconchina2023/sign-action-demo
-  AKV_NAME: feynman-akv
-  KEY_ID: https://feynman-akv.vault.azure.net/keys/feynmanakv-networks-io/6670ffa5cb694c49b1e0a6bb6bdefadc
-  NOTATION_EXPERIMENTAL: 1
 
 jobs:
   # build and push the release, setup notation, sign the artifact, and 
@@ -38,25 +35,3 @@ jobs:
         with:
           push: true
           tags: ${{ env.target_artifact_reference }}
-      - name: Retrieve digest
-        run: |
-          echo "target_artifact_reference=${{ env.REGISTRY_TO_RELEASE }}/${{ env.REGISTRY_REPO_TO_RELEASE }}@${{ steps.push.outputs.digest }}" >> "$GITHUB_ENV"
-      - name: Azure login
-        uses: Azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          allow-no-subscriptions: true
-      - name: setup notation
-        uses: notaryproject/notation-action/setup@main
-      - name: sign released artifact using key pair from AKV
-        uses: notaryproject/notation-action/sign@main
-        with:
-          plugin_name: azure-kv
-          plugin_url: https://github.com/Azure/notation-azure-kv/releases/download/v1.0.0/notation-azure-kv_1.0.0_linux_amd64.tar.gz
-          plugin_checksum: 82d4fee34dfe5e9303e4340d8d7f651da0a89fa8ae03195558f83bb6fa8dd263
-          key_id: ${{ env.KEY_ID }}
-          target_artifact_reference: ${{ env.target_artifact_reference }}
-          signature_format: cose
-          plugin_config: |-
-            self_signed=true
-          allow_referrers_api: 'true'
