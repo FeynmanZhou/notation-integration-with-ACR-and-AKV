@@ -1,5 +1,6 @@
 # Sign an image with Notation GitHub Actions
 
+
 Integrating Notation and notation-akv-plugin to a project releasing to ACR using Github Actions. <br>
 The `test-notation-action.yml` workflow builds and releases the artifact to ACR, then `notation sign` it with a key pair from AKV.
 
